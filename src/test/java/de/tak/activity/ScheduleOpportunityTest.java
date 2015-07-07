@@ -38,6 +38,10 @@ public class ScheduleOpportunityTest {
         activity = new Activity(20.00);
     }
 
+    /**
+     * Test the opportunity creation and linking
+     * to activities and instructors.
+     */
     @Test
     public void testOpportunityCreation() {
 
@@ -60,6 +64,8 @@ public class ScheduleOpportunityTest {
         );
 
         // -- new opportunity is created
+        // -- and has status Open
+        // -- and the correct dates
         Assert.assertNotNull(opportunity);
         Assert.assertEquals(opportunity.getFrom(), from);
         Assert.assertEquals(opportunity.getTo(), to);
@@ -77,6 +83,56 @@ public class ScheduleOpportunityTest {
                 opportunity.getInstructor(), instructor
         );
 
+    }
+
+    /**
+     * Test the (data) constraints when creating opportunities.
+     */
+    @Test
+    public void testOpportunityConstraints() {
+
+        // illegal date supplied
+        DateTime from = new DateTime().plusWeeks(1);
+        DateTime to = from.minusWeeks(2);
+
+        boolean yieldsException = false;
+        try {
+            catalogue.scheduleOpportunity(
+                    activity, from, to, instructor
+            );
+        } catch (Throwable t) {
+            yieldsException = true;
+        }
+
+        Assert.assertTrue(
+                "Did not raise exception upon illegal parameters",
+                yieldsException
+        );
+
+        // linked opportunities are ordered by date
+        // for this test we add two opportunities in reverse order
+
+        DateTime fromA = new DateTime().plusWeeks(1);
+        DateTime toA = fromA.plusWeeks(2);
+
+        DateTime fromB= fromA.plusWeeks(1);
+        DateTime toB = fromB.plusWeeks(2);
+
+        // B added before A
+        Opportunity opportunityB = catalogue.scheduleOpportunity(
+                activity, fromB, toB, instructor
+        );
+
+        // A added after B
+        Opportunity opportunityA = catalogue.scheduleOpportunity(
+                activity, fromA, toA, instructor
+        );
+
+        Assert.assertEquals(
+                "Expected A before B although created in reverse order",
+                opportunityA,
+                activity.getOpportunities().iterator().next()
+        );
 
     }
 }

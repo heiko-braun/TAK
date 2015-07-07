@@ -12,7 +12,7 @@ import java.util.Set;
  * @author Heiko Braun
  * @since 06/07/15
  */
-public class Opportunity {
+public class Opportunity implements Comparable<Opportunity> {
 
     private static final ParticipationConstraint NO_CONSTRAINT = new ParticipationConstraint() {
         @Override
@@ -93,5 +93,18 @@ public class Opportunity {
 
     public Instructor getInstructor() {
         return instructor;
+    }
+
+    @Override
+    public int compareTo(Opportunity o) {
+        return this.from.compareTo(o.getFrom());
+    }
+
+    @Override
+    public String toString() {
+        return "Opportunity{" +
+                "id='" + id + '\'' +
+                ", from=" + from +
+                '}';
     }
 }

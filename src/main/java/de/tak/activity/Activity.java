@@ -2,8 +2,9 @@ package de.tak.activity;
 
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 /**
@@ -14,7 +15,7 @@ public class Activity {
 
     private ActivityFee fee;
 
-    private List<Opportunity> opportunities = new ArrayList<>();
+    private SortedSet<Opportunity> opportunities = new TreeSet<>();
 
     public Activity(double fee) {
         this.fee = new ActivityFee(fee);
@@ -25,13 +26,16 @@ public class Activity {
     }
 
     public Opportunity createOpportunity(DateTime dateFrom, DateTime dateTo, Instructor instructor) {
+
+        assert dateFrom.isBefore(dateTo) : "dateFrom needs to be before dateTo";
+
         Opportunity opportunity = new Opportunity(UUID.randomUUID().toString(), this, dateFrom, dateTo);
         opportunity.setInstructor(instructor);
         this.opportunities.add(opportunity);
         return opportunity;
     }
 
-    public List<Opportunity> getOpportunities() {
+    public Set<Opportunity> getOpportunities() {
         return opportunities;
     }
 }
