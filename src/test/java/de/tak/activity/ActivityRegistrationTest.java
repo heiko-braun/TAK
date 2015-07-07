@@ -36,12 +36,13 @@ public class ActivityRegistrationTest {
     }
 
     /**
-     * Simplified test fixture: Test the registration on an Opportunity
-     * with a single slot.After successful registration the status should
-     * be changed to OpportunityStatus.FULL
+     * Test the registration of participants
+     * (using a simplified text fixture for participation constraints)
+     *
+     * @see #testOpportunityStateChanges()
      */
     @Test
-    public void testRegistrationOpen() {
+    public void testParticipantRegistration() {
 
         // extended fixture: limit participation to a single member
         opportunity.setConstraint(new ParticipationConstraint() {
@@ -110,5 +111,61 @@ public class ActivityRegistrationTest {
 
     }
 
+    /**
+     * Verify the state changes that occur to opportunity instances
+     * as a result of registration of participants.
+     *
+     * @see ParticipationConstraint
+     */
+    @Test
+    public void testOpportunityStateChanges() {
+
+        // test open -> wait list transition
+
+        opportunity.setConstraint(new ParticipationConstraint() {
+
+            private int numParticipants = 0;
+            private OpportunityStatus nextState = OpportunityStatus.OPEN;
+
+            @Override
+            public boolean doesAccept(Member member) {
+
+                // only accepts one participant
+                if(0==numParticipants) {
+                    numParticipants = 1;
+                    nextState = OpportunityStatus.WAITLIST;
+                    return true;
+                }
+
+                return false;
+            }
+
+            @Override
+            public OpportunityStatus nextState(Member member) {
+                return nextState;
+            }
+        });
+
+        // transition to wait list
+        opportunity.registerParticipant(member);
+        Assert.assertEquals(
+                OpportunityStatus.WAITLIST,
+                opportunity.getStatus()
+        );
+
+        // member already registered and participation limit 1
+        boolean yieldsException = false;
+        try {
+            opportunity.registerParticipant(member);
+        } catch (Throwable t) {
+            yieldsException = true;
+        }
+
+        Assert.assertTrue(
+                "Expected an exception to be raised",
+                yieldsException
+        );
+
+    }
 
 }
