@@ -35,13 +35,13 @@ public class ActivityRegistrationTest {
     }
 
     /**
-     * Test the registration on an Opportunity with on OpportunityStatus.OPEN slot.
-     * After successful registration the status should be changed to OpportunityStatus.WAITLIST
+     * Simplified test fixture: Test the registration on an Opportunity with a single slot.
+     * After successful registration the status should be changed to OpportunityStatus.FULL
      */
     @Test
     public void testRegistrationOpen() {
 
-        // extended fixture
+        // extended fixture: limit participation to a single member
         opportunity.setConstraint(new ParticipationConstraint() {
 
             private int numParticipants = 0;
@@ -84,8 +84,8 @@ public class ActivityRegistrationTest {
         Member updatedMember = membershipService.findMember(member.getId());
         boolean matchingInvoice  =
                 updatedMember.getInvoices().stream()
-                .anyMatch(i -> i.getOpportunityId().equals(opportunity.getId())
-                );
+                        .anyMatch(i -> i.getOpportunityId().equals(opportunity.getId())
+                        );
 
         Assert.assertTrue(
                 "Invoice has not been created and linked to member",
