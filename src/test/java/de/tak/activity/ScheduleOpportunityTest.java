@@ -55,7 +55,9 @@ public class ScheduleOpportunityTest {
         DateTime from = new DateTime().plusWeeks(1);
         DateTime to = new DateTime().plusWeeks(2);
 
-        Opportunity opportunity = catalogue.scheduleOpportunity(activity, from, to, instructor);
+        Opportunity opportunity = catalogue.scheduleOpportunity(
+                activity, from, to, instructor
+        );
 
         // -- new opportunity is created
         Assert.assertNotNull(opportunity);

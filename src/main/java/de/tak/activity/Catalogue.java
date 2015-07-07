@@ -4,8 +4,6 @@ import de.tak.member.Member;
 import de.tak.member.MembershipService;
 import org.joda.time.DateTime;
 
-import java.util.Date;
-
 /**
  * @author Heiko Braun
  * @since 06/07/15
@@ -56,7 +54,8 @@ public class Catalogue {
     /**
      * Creates a new opportunity instance
      */
-    public Opportunity scheduleOpportunity(Activity activity, DateTime dateFrom, DateTime dateTo, Instructor instructor) {
+    public Opportunity scheduleOpportunity(Activity activity, DateTime dateFrom,
+                                           DateTime dateTo, Instructor instructor) {
 
         /*
             Preconditions:

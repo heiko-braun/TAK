@@ -36,8 +36,9 @@ public class ActivityRegistrationTest {
     }
 
     /**
-     * Simplified test fixture: Test the registration on an Opportunity with a single slot.
-     * After successful registration the status should be changed to OpportunityStatus.FULL
+     * Simplified test fixture: Test the registration on an Opportunity
+     * with a single slot.After successful registration the status should
+     * be changed to OpportunityStatus.FULL
      */
     @Test
     public void testRegistrationOpen() {
@@ -72,7 +73,9 @@ public class ActivityRegistrationTest {
             -- member is registered for opportunity
         */
 
-        Opportunity updatedOpportunity = catalogue.registerForActivity(this.opportunity, member);
+        Opportunity updatedOpportunity = catalogue.registerForActivity(
+                this.opportunity, member
+        );
 
         Assert.assertTrue(
                 "Member not registered with opportunity",
@@ -82,13 +85,15 @@ public class ActivityRegistrationTest {
 
         // -- invoice is created and linked to member
 
-        Optional<Member> memberResult = membershipService.findMember(this.member.getId());
+        Optional<Member> memberResult =
+                membershipService.findMember(this.member.getId());
         Assert.assertTrue(memberResult.isPresent());
 
         Member updatedMember = memberResult.get();
         boolean matchingInvoice  =
                 updatedMember.getInvoices().stream()
-                        .anyMatch(i -> i.getOpportunityId().equals(opportunity.getId())
+                        .anyMatch(i -> i.getOpportunityId()
+                                        .equals(opportunity.getId())
                         );
 
         Assert.assertTrue(
