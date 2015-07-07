@@ -1,12 +1,12 @@
 package de.tak.activity;
 
-import de.tak.member.Invoice;
 import de.tak.member.Member;
 import de.tak.member.MembershipService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -25,12 +25,13 @@ public class ActivityRegistrationTest {
     @Before
     public void setup() {
         //fixture declarations
-        membershipService = new MockMemberShipService();
+        membershipService = new MockMembershipService();
         catalogue = new Catalogue(membershipService);
 
-        member = new Member(UUID.randomUUID().toString(), "firstname", "lastname");
+        member = membershipService.findMember("john", "doe").get();
+
         activity = new Activity(20.00);
-        opportunity = new Opportunity(UUID.randomUUID().toString(),activity);
+        opportunity = new Opportunity(UUID.randomUUID().toString(), activity);
 
     }
 
@@ -81,7 +82,10 @@ public class ActivityRegistrationTest {
 
         // -- invoice is created and linked to member
 
-        Member updatedMember = membershipService.findMember(member.getId());
+        Optional<Member> memberResult = membershipService.findMember(this.member.getId());
+        Assert.assertTrue(memberResult.isPresent());
+
+        Member updatedMember = memberResult.get();
         boolean matchingInvoice  =
                 updatedMember.getInvoices().stream()
                         .anyMatch(i -> i.getOpportunityId().equals(opportunity.getId())
@@ -101,24 +105,5 @@ public class ActivityRegistrationTest {
 
     }
 
-    private class MockMemberShipService implements MembershipService {
-        @Override
-        public void chargeActivity(Opportunity opportunity, Member member, double amount) {
-            Invoice invoice = new Invoice(
-                    opportunity.getId(),
-                    member.getId(),
-                    amount
-            );
 
-            member.addInvoice(invoice);
-        }
-
-        @Override
-        public Member findMember(String id) {
-            if(ActivityRegistrationTest.this.member.getId().equals(id))
-                return ActivityRegistrationTest.this.member;
-            else
-                return null;
-        }
-    }
 }

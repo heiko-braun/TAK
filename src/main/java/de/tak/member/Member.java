@@ -31,4 +31,12 @@ public class Member {
     public void addInvoice(Invoice invoice) {
         this.invoices.add(invoice);
     }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
 }
