@@ -67,6 +67,7 @@ public class ScheduleOpportunityTest {
         // -- and has status Open
         // -- and the correct dates
         Assert.assertNotNull(opportunity);
+        Assert.assertEquals(OpportunityStatus.OPEN, opportunity.getStatus());
         Assert.assertEquals(opportunity.getFrom(), from);
         Assert.assertEquals(opportunity.getTo(), to);
 
@@ -127,6 +128,8 @@ public class ScheduleOpportunityTest {
         Opportunity opportunityA = catalogue.scheduleOpportunity(
                 activity, fromA, toA, instructor
         );
+
+        Assert.assertTrue(opportunityA.getFrom().isBefore(opportunityB.getFrom()));
 
         Assert.assertEquals(
                 "Expected A before B although created in reverse order",
