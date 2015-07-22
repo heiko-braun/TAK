@@ -39,35 +39,13 @@ public class ActivityRegistrationTest {
      * Test the registration of participants
      * (using a simplified text fixture for participation constraints)
      *
-     * @see #testOpportunityStateChanges()
+     * @see #testDefaultStateChanges()
      */
     @Test
     public void testParticipantRegistration() {
 
         // extended fixture: limit participation to a single member
-        opportunity.setConstraint(new ParticipationConstraint() {
-
-            private int numParticipants = 0;
-            private OpportunityStatus nextState = OpportunityStatus.OPEN;
-
-            @Override
-            public boolean doesAccept(Member member) {
-
-                // only accepts one participant
-                if(0==numParticipants) {
-                    numParticipants = 1;
-                    nextState = OpportunityStatus.FULL;
-                    return true;
-                }
-
-                return false;
-            }
-
-            @Override
-            public OpportunityStatus nextState(Member member) {
-                return nextState;
-            }
-        });
+        opportunity.setState(new StateOpen(1));
 
          /*
             Postcondition:
@@ -105,8 +83,8 @@ public class ActivityRegistrationTest {
         // -- opportunity status is updated to reflect to participation constraints
         Assert.assertEquals(
                 "The opportunity status has not been correctly updated",
-                OpportunityStatus.FULL,
-                updatedOpportunity.getStatus()
+                ParticipationState.ID.WAITLIST,
+                updatedOpportunity.getState()
         );
 
     }
@@ -115,45 +93,43 @@ public class ActivityRegistrationTest {
      * Verify the state changes that occur to opportunity instances
      * as a result of registration of participants.
      *
-     * @see ParticipationConstraint
+     * @see ParticipationState
      */
     @Test
-    public void testOpportunityStateChanges() {
+    public void testDefaultStateChanges() {
 
         // test open -> wait list transition
 
-        opportunity.setConstraint(new ParticipationConstraint() {
+        StateOpen initialState = new StateOpen();
+        opportunity.setState(initialState);
 
-            private int numParticipants = 0;
-            private OpportunityStatus nextState = OpportunityStatus.OPEN;
+        // register max participants
+        for (int limit = DefaultConstraints.MAX_PARTICIPANTS; limit > 0; limit--) {
+            opportunity.registerParticipant(
+                    createMember()
+            );
+        }
 
-            @Override
-            public boolean doesAccept(Member member) {
-
-                // only accepts one participant
-                if(0==numParticipants) {
-                    numParticipants = 1;
-                    nextState = OpportunityStatus.WAITLIST;
-                    return true;
-                }
-
-                return false;
-            }
-
-            @Override
-            public OpportunityStatus nextState(Member member) {
-                return nextState;
-            }
-        });
-
-        // transition to wait list
-        opportunity.registerParticipant(member);
+        // should have transitioned to transition to wait list
         Assert.assertEquals(
-                OpportunityStatus.WAITLIST,
-                opportunity.getStatus()
+                ParticipationState.ID.WAITLIST,
+                opportunity.getState()
         );
 
-        // member already registered and participation limit 1
+
+        // register max waitlist
+        for (int limit = DefaultConstraints.MAX_WAITLIST; limit > 0; limit--) {
+            opportunity.registerParticipant(
+                    createMember()
+            );
+        }
+
+        // should have transitioned to transition to wait list
+        Assert.assertEquals(
+                ParticipationState.ID.FULL,
+                opportunity.getState()
+        );
+
         boolean yieldsException = false;
         try {
             opportunity.registerParticipant(member);
@@ -166,6 +142,13 @@ public class ActivityRegistrationTest {
                 yieldsException
         );
 
+    }
+
+    private Member createMember() {
+        return new Member(
+                UUID.randomUUID().toString(),
+                "John", "Doe"
+        );
     }
 
 }

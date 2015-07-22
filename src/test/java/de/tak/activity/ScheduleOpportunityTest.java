@@ -67,7 +67,7 @@ public class ScheduleOpportunityTest {
         // -- and has status Open
         // -- and the correct dates
         Assert.assertNotNull(opportunity);
-        Assert.assertEquals(OpportunityStatus.OPEN, opportunity.getStatus());
+        Assert.assertEquals(ParticipationState.ID.OPEN, opportunity.getState());
         Assert.assertEquals(opportunity.getFrom(), from);
         Assert.assertEquals(opportunity.getTo(), to);
 

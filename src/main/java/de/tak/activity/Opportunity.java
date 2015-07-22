@@ -3,7 +3,6 @@ package de.tak.activity;
 import de.tak.member.Member;
 import org.joda.time.DateTime;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -12,28 +11,16 @@ import java.util.Set;
  * @author Heiko Braun
  * @since 06/07/15
  */
-public class Opportunity implements Comparable<Opportunity> {
+public class Opportunity extends ParticipationContext implements Comparable<Opportunity> {
 
-    private static final ParticipationConstraint NO_CONSTRAINT = new ParticipationConstraint() {
-        @Override
-        public boolean doesAccept(Member member) {
-            return true;
-        }
-
-        @Override
-        public OpportunityStatus nextState(Member member) {
-            return OpportunityStatus.OPEN;
-        }
-    };
-
-    private OpportunityStatus status = OpportunityStatus.OPEN;
     private Activity activity;
     private final DateTime from;
     private final DateTime to;
     private Map<String, Member> participants = new HashMap<>();
+    private Map<String, Member> waitList = new HashMap<>();
     private String id;
 
-    private ParticipationConstraint constraint = NO_CONSTRAINT;
+    private ParticipationState state;
     private Instructor instructor;
 
     public Opportunity(String id, Activity activity, DateTime from, DateTime to) {
@@ -41,6 +28,7 @@ public class Opportunity implements Comparable<Opportunity> {
         this.activity = activity;
         this.from = from;
         this.to = to;
+        this.state = new StateOpen();
     }
 
     public Opportunity(String id, Activity activity) {
@@ -55,16 +43,28 @@ public class Opportunity implements Comparable<Opportunity> {
         return to;
     }
 
-    public OpportunityStatus getStatus() {
-        return status;
-    }
-
     public void registerParticipant(Member member) {
-
-        assert constraint.doesAccept(member);
-        participants.put(member.getId(), member);
-        this.status = constraint.nextState(member);
+        state.registerParticipant(this, member);
     }
+
+    public ParticipationState.ID getState() {
+        return state.getId();
+    }
+
+    void setState(ParticipationState next) {
+        this.state = next;
+    }
+
+    void addMember(Member member) {
+        this.participants.put(member.getId(), member);
+    }
+
+    @Override
+    void addWaitlistMember(Member member) {
+        this.waitList.put(member.getId(), member);
+    }
+
+    // -- end participation state --
 
     public Activity getActivity() {
         return activity;
@@ -76,14 +76,6 @@ public class Opportunity implements Comparable<Opportunity> {
 
     public String getId() {
         return id;
-    }
-
-    public void setConstraint(ParticipationConstraint constraint) {
-        this.constraint = constraint;
-    }
-
-    public ParticipationConstraint getConstraint() {
-        return constraint;
     }
 
     public void setInstructor(Instructor instructor) {
@@ -98,6 +90,17 @@ public class Opportunity implements Comparable<Opportunity> {
     @Override
     public int compareTo(Opportunity o) {
         return this.from.compareTo(o.getFrom());
+    }
+
+    @Override
+    int getNumParticipants() {
+        return participants.size();
+    }
+
+
+    @Override
+    int getNumWaitlist() {
+        return waitList.size();
     }
 
     @Override

@@ -28,8 +28,8 @@ public class Catalogue {
             -- opportunity status is either open or waitlist
         */
 
-        assert (OpportunityStatus.OPEN == opportunity.getStatus()
-                || OpportunityStatus.WAITLIST == opportunity.getStatus());
+        assert (ParticipationState.ID.OPEN == opportunity.getState()
+                || ParticipationState.ID.WAITLIST == opportunity.getState());
 
         // participation
         opportunity.registerParticipant(member);
