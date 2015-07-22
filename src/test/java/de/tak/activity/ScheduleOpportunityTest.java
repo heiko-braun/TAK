@@ -35,7 +35,7 @@ public class ScheduleOpportunityTest {
         instructor = new Instructor("peter", "post");
         instructor.addQualification(QUALIFICATION_ANY);
 
-        activity = new Activity(20.00);
+        activity = new Activity(new DefaultInvoiceStrategy(), 20.00);
     }
 
     /**

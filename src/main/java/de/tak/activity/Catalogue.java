@@ -36,7 +36,7 @@ public class Catalogue {
 
         // payment
         Activity activity = opportunity.getActivity();
-        double amount = activity.getFee().getMemberPrice();
+        double amount = activity.getFee(member);
         membershipService.chargeActivity(opportunity, member, amount);
 
         /*

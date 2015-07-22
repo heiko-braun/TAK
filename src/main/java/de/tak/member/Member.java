@@ -13,11 +13,17 @@ public class Member {
     private final String firstname;
     private final String lastname;
     private Set<Invoice> invoices = new HashSet<>();
+    private boolean fullMember;
 
     public Member(String id, String firstname, String lastname) {
+        this(id, firstname, lastname, true);
+    }
+
+    public Member(String id, String firstname, String lastname, boolean fullMember) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.fullMember = fullMember;
     }
 
     public String getId() {
@@ -38,5 +44,13 @@ public class Member {
 
     public String getLastname() {
         return lastname;
+    }
+
+    public boolean isFullMember() {
+        return fullMember;
+    }
+
+    public void setFullMember(boolean fullMember) {
+        this.fullMember = fullMember;
     }
 }

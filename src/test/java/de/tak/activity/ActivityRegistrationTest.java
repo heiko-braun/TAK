@@ -30,7 +30,7 @@ public class ActivityRegistrationTest {
 
         member = membershipService.findMember("john", "doe").get();
 
-        activity = new Activity(20.00);
+        activity = new Activity(new DefaultInvoiceStrategy(), 20.00);
         opportunity = new Opportunity(UUID.randomUUID().toString(), activity);
 
     }

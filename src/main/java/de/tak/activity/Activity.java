@@ -1,5 +1,6 @@
 package de.tak.activity;
 
+import de.tak.member.Member;
 import org.joda.time.DateTime;
 
 import java.util.Set;
@@ -13,16 +14,18 @@ import java.util.UUID;
  */
 public class Activity {
 
-    private ActivityFee fee;
+    private InvoiceStrategy invoiceStrategy;
+    private double baseFee;
 
     private SortedSet<Opportunity> opportunities = new TreeSet<>();
 
-    public Activity(double fee) {
-        this.fee = new ActivityFee(fee);
+    public Activity(InvoiceStrategy invoiceStrategy, double baseFee) {
+        this.invoiceStrategy = invoiceStrategy;
+        this.baseFee = baseFee;
     }
 
-    public ActivityFee getFee() {
-        return this.fee;
+    public double getBaseFee() {
+        return baseFee;
     }
 
     public Opportunity createOpportunity(DateTime dateFrom, DateTime dateTo, Instructor instructor) {
@@ -37,5 +40,9 @@ public class Activity {
 
     public Set<Opportunity> getOpportunities() {
         return opportunities;
+    }
+
+    public double getFee(Member member) {
+        return invoiceStrategy.calculateFee(member, this);
     }
 }
