@@ -92,6 +92,7 @@ public class ActivityRegistrationTest {
     /**
      * Verify the state changes that occur to opportunity instances
      * as a result of registration of participants.
+     * Does verify the state pattern with it's default values.
      *
      * @see ParticipationState
      */

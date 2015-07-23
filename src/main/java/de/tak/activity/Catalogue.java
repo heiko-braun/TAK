@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 /**
  * @author Heiko Braun
  * @since 06/07/15
+ * @version
  */
 public class Catalogue {
 
@@ -36,7 +37,7 @@ public class Catalogue {
 
         // payment
         Activity activity = opportunity.getActivity();
-        double amount = activity.getFee(member);
+        double amount = activity.getEffectiveFee(member);
         membershipService.chargeActivity(opportunity, member, amount);
 
         /*
@@ -60,6 +61,7 @@ public class Catalogue {
         /*
             Preconditions:
             -- instructor is recorded in the system
+            -- and does qualify for the activity
             -- activity is recorded in the system
             -- instructor is not already assigned
             -- date > current date

@@ -42,7 +42,7 @@ public class Activity {
         return opportunities;
     }
 
-    public double getFee(Member member) {
+    public double getEffectiveFee(Member member) {
         return invoiceStrategy.calculateFee(member, this);
     }
 }

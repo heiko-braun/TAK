@@ -22,7 +22,7 @@ public class InvoiceTest {
         Member guestMember = new Member("5678", "Guest", "Member", false);
 
         // member fees
-        double fullMemberFee = activity.getFee(fullMember);
+        double fullMemberFee = activity.getEffectiveFee(fullMember);
 
         Assert.assertEquals(
                 "Expected regular fee for full members",
@@ -31,7 +31,7 @@ public class InvoiceTest {
         );
 
         // guest member fees
-        double guestMemberFee = activity.getFee(guestMember);
+        double guestMemberFee = activity.getEffectiveFee(guestMember);
 
         Assert.assertEquals(
                 "Expected 25% higher fee for guest members",

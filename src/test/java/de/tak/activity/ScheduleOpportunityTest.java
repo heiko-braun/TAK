@@ -45,17 +45,7 @@ public class ScheduleOpportunityTest {
     @Test
     public void testOpportunityCreation() {
 
-        /*
-            Postconditions:
-            -- instructor does qualify for activity
-
-         */
-
-        Assert.assertTrue(
-                "Instructor does not qualify for activity",
-                instructor.doesQualifyFor(activity)
-        );
-
+        // extended test fixture (date offsets)
         DateTime from = new DateTime().plusWeeks(1);
         DateTime to = new DateTime().plusWeeks(2);
 
@@ -63,9 +53,12 @@ public class ScheduleOpportunityTest {
                 activity, from, to, instructor
         );
 
-        // -- new opportunity is created
-        // -- and has status Open
-        // -- and the correct dates
+        /*
+           Postconditions:
+            -- new opportunity is created
+            -- and has status Open
+            -- and the correct dates
+        */
         Assert.assertNotNull(opportunity);
         Assert.assertEquals(ParticipationState.ID.OPEN, opportunity.getState());
         Assert.assertEquals(opportunity.getFrom(), from);
@@ -87,7 +80,7 @@ public class ScheduleOpportunityTest {
     }
 
     /**
-     * Test the (data) constraints when creating opportunities.
+     * Test the (date) constraints when creating opportunities.
      */
     @Test
     public void testOpportunityConstraints() {
@@ -110,9 +103,13 @@ public class ScheduleOpportunityTest {
                 yieldsException
         );
 
-        // linked opportunities are ordered by date
-        // for this test we add two opportunities in reverse order
+        /*
+            Postconditions:
+            -- new opportunity is created
+            -- and all opportunities are ordered
+         */
 
+        // for this test we add two opportunities in reverse order
         DateTime fromA = new DateTime().plusWeeks(1);
         DateTime toA = fromA.plusWeeks(2);
 
