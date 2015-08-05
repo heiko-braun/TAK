@@ -55,9 +55,10 @@ public class ScheduleOpportunityTest {
 
         /*
            Postconditions:
-            -- new opportunity is created
-            -- and has status Open
-            -- and the correct dates
+           -- new opportunity is created
+           -- and has the status Open
+           -- and linked to the activity
+           -- and has the instructor set to the specified one
         */
         Assert.assertNotNull(opportunity);
         Assert.assertEquals(ParticipationState.ID.OPEN, opportunity.getState());

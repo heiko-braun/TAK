@@ -32,12 +32,15 @@ public class Catalogue {
         assert (ParticipationState.ID.OPEN == opportunity.getState()
                 || ParticipationState.ID.WAITLIST == opportunity.getState());
 
-        // participation
+        // delegates to opportunity for registration
+        // and update of the participation state
         opportunity.registerParticipant(member);
 
-        // payment
+        // calculate effective fee
         Activity activity = opportunity.getActivity();
         double amount = activity.getEffectiveFee(member);
+
+        // process payment using the adjacent system
         membershipService.chargeActivity(opportunity, member, amount);
 
         /*
@@ -46,7 +49,6 @@ public class Catalogue {
             -- invoice is created and linked to member
             -- opportunity status is updated to reflect to participation constraints
         */
-
 
         return opportunity;
 
@@ -67,15 +69,18 @@ public class Catalogue {
             -- date > current date
          */
 
+        // delegate to instructor to verify the qualifications
+        // it's a pre-condition, but the assertion doubles checks the clients contract
         assert instructor.doesQualifyFor(activity);
 
 
+        // create the actual opportunity
         return activity.createOpportunity(dateFrom, dateTo, instructor);
 
         /*
             Postconditions:
-            -- instructor does qualify for activity
             -- new opportunity is created
+            -- and all opportunities are ordered
             -- and linked to the activity
             -- and has the instructor set to the specified one
          */
